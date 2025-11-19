@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="et">
+<head>
+    <meta charset="UTF-8">
+    <title>Meme Server</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(to bottom, #f0f2f5, #d9e2ec);
+            text-align: center;
+            padding: 50px;
+        }
+        h1 {
+            color: #333;
+        }
+        .meme {
+            margin: 30px auto;
+            max-width: 80%;
+            border-radius: 15px;
+            box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+            transition: transform 0.3s;
+        }
+        .meme:hover {
+            transform: scale(1.05);
+        }
+        .footer {
+            margin-top: 20px;
+            font-size: 18px;
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <h1> igapäevane meme #{{ meme_number }}/{{ total_memes }} </h1>
+    <img class="meme" src="{{ url_for('static', filename=meme_file) }}" alt="Meme">
+    <div class="footer">
+        Järgmine meme uuendatakse: <span id="timer">loading...</span>
+    </div>
+
+    <script>
+        const nextTime = new Date("{{ next_day_iso }}").getTime();
+
+        function updateTimer() {
+            const now = new Date().getTime();
+            const distance = nextTime - now;
+
+            if(distance <= 0){
+                document.getElementById("timer").innerHTML = "Uus meme on nüüd!";
+                return;
+            }
+
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000*60*60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000*60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            document.getElementById("timer").innerHTML = 
+                hours.toString().padStart(2,"0") + ":" +
+                minutes.toString().padStart(2,"0") + ":" +
+                seconds.toString().padStart(2,"0");
+        }
+
+        setInterval(updateTimer, 1000);
+        updateTimer();
+    </script>
+</body>
+</html>

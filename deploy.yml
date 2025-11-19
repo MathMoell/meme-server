@@ -1,0 +1,63 @@
+---
+- name: Deploy Meme Server
+  hosts: myserver
+  become: true
+  tasks:
+
+    - name: Gather facts
+      ansible.builtin.setup:
+
+    - name: Update apt cache
+      ansible.builtin.apt:
+        update_cache: yes
+
+    - name: Install required packages
+      ansible.builtin.apt:
+        name:
+          - apt-transport-https
+          - ca-certificates
+          - curl
+          - gnupg
+          - lsb-release
+        state: present
+
+    - name: Add Docker GPG key
+      ansible.builtin.command: >
+        mkdir -p /etc/apt/keyrings &&
+        curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+      args:
+        creates: /etc/apt/keyrings/docker.gpg
+
+    - name: Add Docker repository
+      ansible.builtin.shell: |
+        echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" \
+        > /etc/apt/sources.list.d/docker.list
+      args:
+        creates: /etc/apt/sources.list.d/docker.list
+
+    - name: Update apt cache again
+      ansible.builtin.apt:
+        update_cache: yes
+
+    - name: Install Docker
+      ansible.builtin.apt:
+        name: docker-ce
+        state: present
+
+    - name: Build meme-server Docker image
+      community.docker.docker_image:
+        name: meme-server
+        source: build
+        build:
+          path: /home/kasutaja/meme-server
+
+    - name: Run meme-server container
+      community.docker.docker_container:
+        name: meme-server
+        image: meme-server
+        state: started
+        restart_policy: unless-stopped
+        ports:
+          - "8080:8080"
+        volumes:
+          - /home/kasutaja/meme-server/memes:/app/memes
