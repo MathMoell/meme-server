@@ -15,7 +15,7 @@ Kuidas integreerib: Kõik koodimuudatused salvestatakse gitiga ja saadetakse Git
 
 ### 2. GitHub Actions
 Miks: CI / CD tööriist, mis tagab, et iga push värskendab pipelinei ja ehitab projekti automaatselt.  
-Kuidas integreerib: Action fail (`.github/workflows/deploy.yml`) ehitab Docker image'i ja saab automaatselt deploy'ida või testida projekti.
+Kuidas integreerib: Action fail .github/workflows/deploy.yml ehitab Docker image'i ja saab automaatselt deploy'ida või testida projekti.
 
 ### 3. Docker
 Miks: Pakendab rakenduse koos kõikide sõltuvustega ühte konteinerisse, et seda saaks igal masinal jooksutada samamoodi.  
@@ -23,7 +23,7 @@ Kuidas integreerib: Dockerfile loob konteineri, mis sisaldab Flask serverit, pil
 
 ### 4. Ansible
 Miks: Automatiseerib serverisse deploy protsessi, sealhulgas Docker image ehitamise ja käivitamise.  
-Kuidas integreerib: `deploy.yml` playbook tagab, et serveris oleks Docker installitud ja meme-server konteiner jooksuks õigesti.
+Kuidas integreerib: deploy.yml playbook tagab, et serveris oleks Docker installitud ja meme-server konteiner jooksuks õigesti.
 
 ### Tehisintellekti kasutasin peamiselt et anda sellele natuke visuaalsemat ilu ja debuggida koodi.
 
