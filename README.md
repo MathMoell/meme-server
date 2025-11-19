@@ -6,7 +6,7 @@ Veebirakendus, mis näitab igapäev uut IT meme et, oleks midagi, lähtudes Eest
   See veebi rakendus näitab iga päev uut IT meemi, automaatselt vahetades pilti öösel kell 00:00 Eesti aja järgi. Lisaks kuvab rakendus ka taimeri mis uuendab end iga sekund, mis näitab, millal järgmine meem uuendatakse.
 
 - Mis probleem lahendab?  
-  Lahendab vajaduse automaatselt vahetuva meemi kuvamiseks veebilehel ning annab visuaalset infot järgmise vahetuse aja kohta.
+  Annab kasutajale midagi mida igapäev oodata :) ning annab visuaalset infot järgmise vahetuse aja kohta.
 
 ## Tööriistad
 ### 1. Git
