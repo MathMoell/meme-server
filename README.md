@@ -25,6 +25,8 @@ Kuidas integreerib: Dockerfile loob konteineri, mis sisaldab Flask serverit, pil
 Miks: Automatiseerib serverisse deploy protsessi, sealhulgas Docker image ehitamise ja käivitamise.  
 Kuidas integreerib: `deploy.yml` playbook tagab, et serveris oleks Docker installitud ja meme-server konteiner jooksuks õigesti.
 
+### Tehisintellekti kasutasin peamiselt et anda sellele natuke visuaalsemat ilu ja debuggida koodi.
+
 ## Käivitamine
 
 ```bash
