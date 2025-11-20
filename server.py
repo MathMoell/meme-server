@@ -1,33 +1,36 @@
 from flask import Flask, render_template
 import os
-from datetime import datetime, timedelta
+from datetime import datetime
 import pytz
 
 app = Flask(__name__, static_folder="memes")
 
 MEME_FOLDER = "memes"
+ALLOWED_EXTENSIONS = (".png", ".jpg", ".jpeg", ".gif", ".webp")
 
 @app.route("/")
 def home():
-    memes = [f for f in os.listdir(MEME_FOLDER) if f.lower().endswith(('.png', '.jpg', '.jpeg', '.gif'))]
-    
+    # Leia kõik pildid
+    memes = [
+        f for f in os.listdir(MEME_FOLDER)
+        if f.lower().endswith(ALLOWED_EXTENSIONS)
+    ]
+
     if not memes:
-        return "Mingeid meme faile ei leitud kaustas memes!"
+        return "Kaustas 'memes' pole ühtegi pilti!"
 
-    est = pytz.timezone("Europe/Tallinn")
-    now = datetime.now(est)
+    # Võta pildi index 20-sekundilise tsükli järgi
+    now = datetime.now(pytz.timezone("Europe/Tallinn"))
+    seconds_today = now.hour * 3600 + now.minute * 60 + now.second
+    meme_index = (seconds_today // 20) % len(memes)
 
-    meme_index = (now - datetime(now.year, now.month, now.day, tzinfo=est)).days % len(memes)
-    meme_file = memes[meme_index]
-
-    next_day = datetime(now.year, now.month, now.day, tzinfo=est) + timedelta(days=1)
+    meme_file = f"{MEME_FOLDER}/{memes[meme_index]}"
 
     return render_template(
-        "index.html", 
-        meme_file=meme_file, 
+        "index.html",
+        meme_file=meme_file,
         meme_number=meme_index + 1,
-        total_memes=len(memes),
-        next_day_iso=next_day.isoformat()  # ISO string JavaScripti jaoks
+        total_memes=len(memes)
     )
 
 if __name__ == "__main__":
