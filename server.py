@@ -1,37 +1,41 @@
 from flask import Flask, render_template
 import os
-from datetime import datetime
+from datetime import datetime, timedelta
 import pytz
 
 app = Flask(__name__, static_folder="memes")
 
 MEME_FOLDER = "memes"
-ALLOWED_EXTENSIONS = (".png", ".jpg", ".jpeg", ".gif", ".webp")
 
 @app.route("/")
 def home():
-    # Leia kõik pildid
-    memes = [
-        f for f in os.listdir(MEME_FOLDER)
-        if f.lower().endswith(ALLOWED_EXTENSIONS)
-    ]
+    memes = [f for f in os.listdir(MEME_FOLDER)
+             if f.lower().endswith((".png", ".jpg", ".jpeg", ".gif"))]
 
     if not memes:
-        return "Kaustas 'memes' pole ühtegi pilti!"
+        return "Mingeid memesid ei leitud!"
 
-    # Võta pildi index 20-sekundilise tsükli järgi
-    now = datetime.now(pytz.timezone("Europe/Tallinn"))
-    seconds_today = now.hour * 3600 + now.minute * 60 + now.second
-    meme_index = (seconds_today // 20) % len(memes)
+    est = pytz.timezone("Europe/Tallinn")
+    now = datetime.now(est)
 
-    meme_file = f"{MEME_FOLDER}/{memes[meme_index]}"
+    # Tänase päeva indeks
+    start_of_year = datetime(now.year, 1, 1, tzinfo=est)
+    days_passed = (now - start_of_year).days
+
+    meme_index = days_passed % len(memes)
+    meme_file = memes[meme_index]
+
+    # Järgmine vahetus = järgmine kesköö Eesti aja järgi
+    next_day = datetime(now.year, now.month, now.day, tzinfo=est) + timedelta(days=1)
 
     return render_template(
         "index.html",
         meme_file=meme_file,
         meme_number=meme_index + 1,
-        total_memes=len(memes)
+        total_memes=len(memes),
+        next_day_iso=next_day.isoformat()
     )
+
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8080)
